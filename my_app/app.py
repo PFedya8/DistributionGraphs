@@ -159,6 +159,35 @@ app_ui = ui.page_fluid(
 def server(input, output, session):
     @output
     @render.plot
+    def probability1(): #first plot
+        fig, ax = plt.subplots()
+        a = input.slide1()
+        
+        plt.xlabel("x")
+        plt.ylabel("p")
+        plt.grid()
+        ax.plot([0, 0], [0, 1 - a], color="red")
+        ax.plot([1, 1], [0, a])
+        return fig
+
+    @output
+    @render.plot
+    def distribution_function():
+        fig, ax = plt.subplots()
+        a = input.slide1()
+        
+        plt.xlabel("x")
+        plt.ylabel("p")
+        plt.grid()
+        ax.plot([-1, 0], [0, 0], color="red")
+        ax.plot([0, 1], [1 - a, 1 - a])
+        ax.plot([1, 2], [1, 1])
+        return fig
+    
+    
+    
+    @output
+    @render.plot
     def probability3():
         fig, ax = plt.subplots()
         p = input.slide1()
@@ -186,6 +215,58 @@ def server(input, output, session):
         ax.plot(x, y)
         
         return fig
+    
+    # plot for binomial distribution
+    @output
+    @render.plot
+    def prob_binom():
+        fig = plt.subplots()
+        p = input.slide2()
+        n = input.n()
+        binomial = data = stats.binom.rvs(n=n, p=p, size=1000)
+        plt.hist(binomial, bins= n, density=False)
+        plt.show()
+        
+        return fig
+
+
+    @output
+    @render.plot
+    def prob_hyper():
+        fig = plt.figure()
+        n = input.population_size()
+        a = input.desired_items()
+        k = input.sample_size()
+     
+        x = np.arange(0, n + 1)
+        y = stats.hypergeom.pmf(x, n, a, k)
+        ax = fig.add_subplot(111)
+        ax.plot(x, y, 'bo')
+        ax.vlines(x, 0, y, lw=2)
+        ax.set_xlabel('Number of desired items in the sample')        
+        plt.show()
+        
+    
+    
+    
+    @output
+    @render.plot
+    def prob_pois():
+        # poisson distribution
+        fig = plt.figure()
+        lam =  input.lambd()
+        size = input.sizer_pois()
+        x = np.arange(0, size)
+        y = stats.poisson.pmf(x, lam)
+        
+        plt.plot(x, y, 'bo')
+        for i in range(len(x)):
+            plt.plot(x, y)
+        plt.vlines(x, 0, y, lw=2)
+        
+        
+        
+        plt.show()
 
     
 
