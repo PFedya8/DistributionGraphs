@@ -29,33 +29,29 @@ app_ui = ui.page_fluid(
             "Распределение Бернулли",
             
             ui.input_slider("slide1", "p", 0, 1, 0.5),
-
-            ui.h4("Параметры:"),
-            ui.h5("\(n \geq 0 — число \ неудач \ до \ первого \ успеха\)"),
-            ui.h5("\( p - вероятность \ упеха \)"),
-
-            ui.h3("Функция вероятности:"),
-            ui.h5("\( \mathbb{P}(\\xi) = q^n p, \ \ n \in \{0, 1, 2, ...\}\)"),
-            ui.output_plot("probability3"),
-
+            ui.h3("Функция вероятности"),
+            ui.output_plot("probability1"),
+            
             ui.h3("Функция распределения"),
-            ui.h5("\( \mathbb{F}(\\xi) = 1 - q^{n+1}\)"),
-            ui.output_plot("probability4"),
-
+            ui.output_plot("distribution_function"),
+            ui.output_table("result"),
+            
+                        
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Математическое \ ожиданние: \\frac{q}{p} \)"),
-                ui.tags.li("\(Дисперсия: \\frac{q}{p^2} \)"),
-                ui.tags.li("\(Мода: 0\)"),
-                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{2-p}{\\sqrt{1-p}} \)"),
-                ui.tags.li("\(Коэфициент \ эксцесса: 6 + \\frac{p^2}{1-p} \)"),
+                ui.tags.li("\(Математическое \ ожиданние: p\)"),
+                ui.tags.li("\(Дисперсия: p(1-p)\)"),
+                ui.tags.li("\(Мода: отсутствует\)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: отсутствует\)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: отсутствует\)"),
+                
             ),
-
+            
             ui.h3("Формулы:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Плотность: P(\{k\}) = (1 - p)^{k-1}p \)"),
+                ui.tags.li("\(P(\{0\}) = 1 - p, \ P(\{1\}) = p\)"),
             ),
             
         ),
@@ -67,7 +63,7 @@ app_ui = ui.page_fluid(
             # input n as integer
             ui.input_numeric("n", "n", value= 10),
             ui.h3("Функция вероятности"),
-            ui.output_plot("prob_binom"),
+            ui.output_plot("probability2"),
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
@@ -88,38 +84,6 @@ app_ui = ui.page_fluid(
             
         ),
         
-        ui.nav(
-            "Геометрическое распределение",
-            ui.input_slider("slide1", "p", 0, 1, 0.5),
-
-            ui.h4("Параметры:"),
-            ui.h5("\(n \geq 0 — число \ неудач \ до \ первого \ успеха\)"),
-            ui.h5("\( p - вероятность \ упеха \)"),
-
-            ui.h3("Функция вероятности:"),
-            ui.h5("\( \mathbb{P}(\\xi) = q^n p, \ \ n \in \{0, 1, 2, ...\}\)"),
-            ui.output_plot("probability3"),
-
-            ui.h3("Функция распределения"),
-            ui.h5("\( \mathbb{F}(\\xi) = 1 - q^{n+1}\)"),
-            ui.output_plot("probability4"),
-
-            ui.h3("Характеристики:"),
-            ui.tags.ul(
-                {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Математическое \ ожиданние: \\frac{q}{p} \)"),
-                ui.tags.li("\(Дисперсия: \\frac{q}{p^2} \)"),
-                ui.tags.li("\(Мода: 0\)"),
-                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{2-p}{\\sqrt{1-p}} \)"),
-                ui.tags.li("\(Коэфициент \ эксцесса: 6 + \\frac{p^2}{1-p} \)"),
-            ),
-
-            ui.h3("Формулы:"),
-            ui.tags.ul(
-                {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Плотность: P(\{k\}) = (1 - p)^{k-1}p \)"),
-            ),
-        ),
     
         ui.nav(
             "Гипергеометрическое распределение",
@@ -127,7 +91,7 @@ app_ui = ui.page_fluid(
             ui.input_numeric("desired_items", "Total number of desired items", value= 7),
             ui.input_numeric("sample_size", "Number_of_draws", value= 12),
             ui.h3("Функция вероятности"),
-            ui.output_plot("prob_hyper"),
+            ui.output_plot("probability3"),
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
@@ -146,8 +110,10 @@ app_ui = ui.page_fluid(
             "Распределение Пуассона",
             ui.input_numeric("lambd", "lambda", value= 10),
             ui.input_slider("sizer_pois", "k", 1, 500, 100),
-            ui.output_plot("prob_pois"),
+            ui.output_plot("probability4"),
         ),
+        
+        
         
         
     ),
@@ -157,6 +123,11 @@ app_ui = ui.page_fluid(
 
 
 def server(input, output, session):
+    @output
+    @render.text
+    def txt():
+        return f"slide1*2 is {input.slide1() * 2}"
+
     @output
     @render.plot
     def probability3():
@@ -181,11 +152,64 @@ def server(input, output, session):
         plt.xlabel("x")
         plt.ylabel("p")
         plt.grid()
-        x = np.linspace(0, 10, 100)
-        y = 1 - (1 - p) ** (x + 1)
-        ax.plot(x, y)
+        ax.plot([-1, 0], [0, 0], color="red")
+        ax.plot([0, 1], [1 - a, 1 - a])
+        ax.plot([1, 2], [1, 1])
+        return fig
+
+    # plot for binomial distribution
+    @output
+    @render.plot
+    def probability2():
+        fig = plt.subplots()
+        p = input.slide2()
+        n = input.n()
+        binomial = data = stats.binom.rvs(n=n, p=p, size=1000)
+        plt.hist(binomial, bins= n, density=False)
+        plt.show()
         
         return fig
+
+
+    @output
+    @render.plot
+    def probability3():
+        fig = plt.figure()
+        n = input.population_size()
+        a = input.desired_items()
+        k = input.sample_size()
+     
+        x = np.arange(0, n + 1)
+        y = stats.hypergeom.pmf(x, n, a, k)
+        ax = fig.add_subplot(111)
+        ax.plot(x, y, 'bo')
+        ax.vlines(x, 0, y, lw=2)
+        ax.set_xlabel('Number of desired items in the sample')        
+        plt.show()
+        
+    
+    
+    
+    @output
+    @render.plot
+    def probability4():
+        # poisson distribution
+        fig = plt.figure()
+        lam =  input.lambd()
+        size = input.sizer_pois()
+        x = np.arange(0, size)
+        y = stats.poisson.pmf(x, lam)
+        
+        plt.plot(x, y, 'bo')
+        for i in range(len(x)):
+            plt.plot(x, y)
+        plt.vlines(x, 0, y, lw=2)
+        
+        
+        
+        plt.show()
+        
+   
 
     
 
