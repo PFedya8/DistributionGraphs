@@ -23,39 +23,36 @@ app_ui = ui.page_fluid(
     
     ui.navset_tab(
         ui.nav(
-            "Распределение Бернулли",
-            
+            "Геометрическое распределение",
             ui.input_slider("slide1", "p", 0, 1, 0.5),
-            ui.h3("Функция вероятности"),
-            ui.output_plot("probability1"),
-            
+
+            ui.h4("Параметры:"),
+            ui.h5("\(n \geq 0 — число \ неудач \ до \ первого \ успеха\)"),
+            ui.h5("\( p - вероятность \ упеха \)"),
+
+            ui.h3("Функция вероятности:"),
+            ui.h5("\( \mathbb{P}(\\xi) = q^n p, \ \ n \in \{0, 1, 2, ...\}\)"),
+            ui.output_plot("probability3"),
+
             ui.h3("Функция распределения"),
-            ui.output_plot("distribution_function"),
-            ui.output_table("result"),
-            
-                        
+            ui.h5("\( \mathbb{F}(\\xi) = 1 - q^{n+1}\)"),
+            ui.output_plot("probability4"),
+
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Математическое \ ожиданние: p\)"),
-                ui.tags.li("\(Дисперсия: p(1-p)\)"),
-                ui.tags.li("\(Мода: отсутствует\)"),
-                ui.tags.li("\(Коэфициент \ ассиметрии: отсутствует\)"),
-                ui.tags.li("\(Коэфициент \ эксцесса: отсутствует\)"),
-                
+                ui.tags.li("\(Математическое \ ожиданние: \\frac{q}{p} \)"),
+                ui.tags.li("\(Дисперсия: \\frac{q}{p^2} \)"),
+                ui.tags.li("\(Мода: 0\)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{2-p}{\\sqrt{1-p}} \)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: 6 + \\frac{p^2}{1-p} \)"),
             ),
-            
+
             ui.h3("Формулы:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(P(\{0\}) = 1 - p, \ P(\{1\}) = p\)"),
+                ui.tags.li("\(Плотность: P(\{k\}) = (1 - p)^{k-1}p \)"),
             ),
-            
-        ),
-        ui.nav(
-            "Биноминальное распределение",
-            ui.input_slider("slide2", "p", 0, 1, 0.8),
-            ui.output_plot("probability2"),
         ),
     ),
     
@@ -65,55 +62,34 @@ app_ui = ui.page_fluid(
 
 def server(input, output, session):
     @output
-    @render.text
-    def txt():
-        return f"slide1*2 is {input.slide1() * 2}"
-
-    @output
     @render.plot
-    def probability1(): #first plot
+    def probability3():
         fig, ax = plt.subplots()
-        a = input.slide1()
-        
-        plt.xlabel("x")
-        plt.ylabel("p")
-        plt.grid()
-        ax.plot([0, 0], [0, 1 - a], color="red")
-        ax.plot([1, 1], [0, a])
-        return fig
-
-    @output
-    @render.plot
-    def distribution_function():
-        fig, ax = plt.subplots()
-        a = input.slide1()
-        
-        plt.xlabel("x")
-        plt.ylabel("p")
-        plt.grid()
-        ax.plot([-1, 0], [0, 0], color="red")
-        ax.plot([0, 1], [1 - a, 1 - a])
-        ax.plot([1, 2], [1, 1])
-        return fig
-
-
-    @output
-    @render.plot
-    def probability2():
-        fig, ax = plt.subplots()
-        b = input.slide2()
+        p = input.slide1()
 
         plt.xlabel("x")
         plt.ylabel("p")
         plt.grid()
-        ax.plot([1, 0], [0, 1 - b], color="red")
+        x = np.linspace(0, 10, 100)
+        y = (1 - p) ** x * p
+        ax.plot(x, y)
         
         return fig
     
+    @output
+    @render.plot
+    def probability4():
+        fig, ax = plt.subplots()
+        p = input.slide1()
 
-
-
-   
+        plt.xlabel("x")
+        plt.ylabel("p")
+        plt.grid()
+        x = np.linspace(0, 10, 100)
+        y = 1 - (1 - p) ** (x + 1)
+        ax.plot(x, y)
+        
+        return fig
 
     
 
