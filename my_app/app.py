@@ -63,7 +63,7 @@ app_ui = ui.page_fluid(
             # input n as integer
             ui.input_numeric("n", "n", value= 10),
             ui.h3("Функция вероятности"),
-            ui.output_plot("probability2"),
+            ui.output_plot("prob_binom"),
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
@@ -91,7 +91,7 @@ app_ui = ui.page_fluid(
             ui.input_numeric("desired_items", "Total number of desired items", value= 7),
             ui.input_numeric("sample_size", "Number_of_draws", value= 12),
             ui.h3("Функция вероятности"),
-            ui.output_plot("probability3"),
+            ui.output_plot("prob_hyper"),
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
@@ -110,7 +110,7 @@ app_ui = ui.page_fluid(
             "Распределение Пуассона",
             ui.input_numeric("lambd", "lambda", value= 10),
             ui.input_slider("sizer_pois", "k", 1, 500, 100),
-            ui.output_plot("probability4"),
+            ui.output_plot("prob_pois"),
         ),
         
         
@@ -158,7 +158,7 @@ def server(input, output, session):
     # plot for binomial distribution
     @output
     @render.plot
-    def probability2():
+    def prob_binom():
         fig = plt.subplots()
         p = input.slide2()
         n = input.n()
@@ -171,7 +171,7 @@ def server(input, output, session):
 
     @output
     @render.plot
-    def probability3():
+    def prob_hyper():
         fig = plt.figure()
         n = input.population_size()
         a = input.desired_items()
@@ -190,7 +190,7 @@ def server(input, output, session):
     
     @output
     @render.plot
-    def probability4():
+    def prob_pois():
         # poisson distribution
         fig = plt.figure()
         lam =  input.lambd()
