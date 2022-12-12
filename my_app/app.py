@@ -39,29 +39,38 @@ app_ui = ui.page_fluid(
             ui.output_plot("normal_distribution1"),
 
             ui.h3("Функция распределения"),
-            ui.h5("\( \mathbb{F}(\\xi) = 1 - q^{n+1}\)"),
+            ui.h5("\( \mathbb{F}(x) = \\frac{1}{2}[1+erf(\\frac{x-\mu}{\sqrt{2\sigma^2}})] \)"),
+            ui.h5("\( erf \ - \ функция \ ошибок\)"),
+            ui.h5("\( erf x\ = \ \\frac{2}{\sqrt{\pi}} \int\limits_0^x e^{-t^2} \mathrm d t\)"),
             ui.output_plot("normal_distribution2"),
 
             ui.h3("Характеристики:"),
             ui.tags.ul(
                 {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Математическое \ ожиданние: \\frac{q}{p} \)"),
-                ui.tags.li("\(Дисперсия: \\frac{q}{p^2} \)"),
-                ui.tags.li("\(Мода: 0\)"),
-                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{2-p}{\\sqrt{1-p}} \)"),
-                ui.tags.li("\(Коэфициент \ эксцесса: 6 + \\frac{p^2}{1-p} \)"),
-            ),
-
-            ui.h3("Формулы:"),
-            ui.tags.ul(
-                {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(Плотность: P(\{k\}) = (1 - p)^{k-1}p \)"),
+                ui.tags.li("\(Математическое \ ожиданние: \mu \)"),
+                ui.tags.li("\(Дисперсия: \mu \)"),
+                ui.tags.li("\(Мода: \mu\)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: 0 \)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: 0 \)"),
             ),
         ),
     ),
     
 )
 
+def rectangle_method(f, a, b, N):
+    ans = 0
+    h = (b - a) / N
+    mid = (2 * a + h) / 2
+    for i in range(N):
+        ans += f(mid)
+        mid += h
+    
+    ans *= h
+    return ans
+
+def f(t):
+    return math.exp(-(t ** 2))
 
 def server(input, output, session):
     @output
@@ -78,7 +87,7 @@ def server(input, output, session):
         x = np.linspace(-5, 5, 100)
         y = np.zeros(100)
         for i in range(0, 100):
-            y[i] = 1 / (sigma * (2 * math.pi) ** 1/2) * math.exp(-(x[i] - mu) ** 2)
+            y[i] = 1 / (sigma * (2 * math.pi) ** (1/2)) * math.exp(-(x[i] - mu) ** 2)
         ax.plot(x, y)
         
         return fig
@@ -88,14 +97,20 @@ def server(input, output, session):
     def normal_distribution2():
         fig, ax = plt.subplots()
         p = input.normal1()
+        mu = input.normal2()
+        sigma = input.normal3()
 
         plt.xlabel("x")
         plt.ylabel("p")
         plt.grid()
-        x = np.linspace(0, 10, 100)
-        y = 1 - (1 - p) ** (x + 1)
+        x = np.linspace(-5, 5, 100)
+        x_i = np.zeros(100)
+        for i in range(0, 100):
+            x_i[i] = (x[i] - mu) / (sigma * (2 ** (1/2)))
+        y = np.zeros(100)
+        for i in range(0, 100):
+            y[i] = 1 / 2 * (1 + 2 / (math.pi ** (1/2)) * rectangle_method(f, 0, x_i[i], 100))
         ax.plot(x, y)
-        
         return fig
 
     
