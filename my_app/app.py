@@ -25,7 +25,6 @@ app_ui = ui.page_fluid(
     ui.navset_tab(
         ui.nav(
             "Нормальное распределение (гауссовское)",
-            ui.input_slider("normal1", "p", 0, 1, 0.5),
             ui.input_slider("normal2", "\(\mu\)", -5, 5, 0),
             ui.input_slider("normal3", "\(\sigma\)", 0, 10, 5),
 
@@ -77,7 +76,6 @@ def server(input, output, session):
     @render.plot
     def normal_distribution1():
         fig, ax = plt.subplots()
-        p = input.normal1()
         mu = input.normal2()
         sigma = input.normal3()
 
@@ -96,7 +94,6 @@ def server(input, output, session):
     @render.plot
     def normal_distribution2():
         fig, ax = plt.subplots()
-        p = input.normal1()
         mu = input.normal2()
         sigma = input.normal3()
 
