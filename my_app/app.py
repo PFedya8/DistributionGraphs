@@ -1,7 +1,10 @@
 from shiny import *
 import numpy as np
+import seaborn as sb
+
 
 import scipy.stats as stats
+from scipy.stats import binom
 from scipy.stats import hypergeom
 from scipy.stats import poisson
 import pandas as pd
@@ -314,14 +317,22 @@ def server(input, output, session):
     @output
     @render.plot
     def prob_binom():
-        fig = plt.subplots()
         p = input.slide2()
         n = input.n()
+        '''
         binomial = data = stats.binom.rvs(n=n, p=p, size=1000)
         plt.hist(binomial, bins= n, density=False)
         plt.show()
+        '''
+        binom.rvs(size=10,n=n,p=p)
+
+        data_binom = binom.rvs(n=n,p=p,loc=0,size=1000)
+        ax = sb.distplot(data_binom,
+                kde=True,
+                color='blue',
+                hist_kws={"linewidth": 25,'alpha':1})
+        ax.set(xlabel='Binomial', ylabel='Frequency')
         
-        return fig
 
 
     @output
@@ -338,7 +349,7 @@ def server(input, output, session):
         ax.plot(x, y, 'bo')
         ax.vlines(x, 0, y, lw=2)
         ax.set_xlabel('Number of desired items in the sample')        
-        plt.show()
+        
         
     
     
