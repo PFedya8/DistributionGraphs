@@ -38,9 +38,12 @@ app_ui = ui.page_fluid(
             
             ui.input_slider("slide1", "p", 0, 1, 0.5),
             ui.h3("Функция вероятности"),
+            ui.h3("\( \mathbb{P}(\\xi = 1) = p\)"),
+            ui.h3("\( \mathbb{P}(\\xi = 0) = 1 - p\)"),
             ui.output_plot("probability1"),
             
             ui.h3("Функция распределения"),
+            ui.h3("\( \mathbb{F}(\\xi = 1) = \\begin{cases} 0, k < 0 \\newline 1 - p, 0 \leq k < 1 \\newline p, k \geq 1\end{cases} \)"),
             ui.output_plot("distribution_function"),
             ui.output_table("result"),
             
@@ -50,18 +53,11 @@ app_ui = ui.page_fluid(
                 {"style":"list-style-type:circle;font-size: 20px"},
                 ui.tags.li("\(Математическое \ ожиданние: p\)"),
                 ui.tags.li("\(Дисперсия: p(1-p)\)"),
-                ui.tags.li("\(Мода: отсутствует\)"),
-                ui.tags.li("\(Коэфициент \ ассиметрии: отсутствует\)"),
-                ui.tags.li("\(Коэфициент \ эксцесса: отсутствует\)"),
+                ui.tags.li("\(Мода: \\begin{cases} 0, \ q > p \\\\ 0, 1, \ q = p \\\\ 1, \ q < p \end{cases}\)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{1 - 2p}{\sqrt{(1-p)p}} \)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: \\frac{6p^2 - 6p + 1}{p(1-p)} \)"),
                 
             ),
-            
-            ui.h3("Формулы:"),
-            ui.tags.ul(
-                {"style":"list-style-type:circle;font-size: 20px"},
-                ui.tags.li("\(P(\{0\}) = 1 - p, \ P(\{1\}) = p\)"),
-            ),
-            
         ),
         # Биноминальное распределение
         ui.nav(
@@ -234,18 +230,179 @@ app_ui = ui.page_fluid(
             ),
         ),
         
+        # Коши
+        ui.nav(
+            "Коши",
+            ui.input_slider("couchy1", "\(x_0\)", 0, 10, 0),
+            ui.input_numeric("couchy2", "\(\gamma\)", value= 1),
+
+            ui.h4("Параметры:"),
+            ui.h5("\(C(x_0, \gamma) \)"),
+            ui.h5("\(x_0 \ - коэффициент \ сдвига \)"),
+            ui.h5("\(\gamma > 0 \ - коэффициент \ масштаба \)"),
+
+            ui.h3("Плотность вероятности:"),
+            ui.h5("\( \mathbb{P}(\\xi) = \\frac{1}{\pi \gamma[1 + (\\frac{x-x_0}{\gamma})^2]}\)"),
+            ui.output_plot("couchy_distr1"),
+
+            ui.h3("Функция распределения"),
+            ui.h5("\( \mathbb{F}(x) = \\frac{1}{\pi} \\arctan({\\frac{x - x_0}{\gamma}}) + \\frac{1}{2} \)"),
+            ui.output_plot("couchy_distr2"),
+
+            ui.h3("Характеристики:"),
+            ui.tags.ul(
+                {"style":"list-style-type:circle;font-size: 20px"},
+                ui.tags.li("\(Математическое \ ожиданние: не \ существует\)"),
+                ui.tags.li("\(Медиана: x_0 \)"),
+                ui.tags.li("\(Мода: x_0 \)"),
+                ui.tags.li("\(Дисперсия: не \ существует \)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: не \ существует\)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: не \ существует\)"),
+            ),
+        ),
         
         
+        # Отрицательное биномиальное
+        ui.nav(
+            "Отрицательное биномиальное распределение",
+            ui.input_slider("neg_bin1", "p", 0, 1, 0.5),
+            ui.input_slider("neg_bin2", "r", 0, 10, 5),
+
+            ui.h4("Параметры:"),
+            ui.h5("\( NB(r, p) \ - \ количество \ неудач \ до \ r-го \ успеха \)"),
+            ui.h5("\( p - вероятность \ упеха \)"),
+
+            ui.h3("Функция вероятности:"),
+            ui.h5("\( \mathbb{P}(\\xi = k) = C^{k}_{k+r-1} p^r q^k,\ \ k \in \{0, 1, 2, ...\}\)"),
+            ui.output_plot("prob_neg_bin"),
+
+            ui.h3("Функция распределения"),
+            ui.h5("\( F(k) = I_p(r, k + 1) \)"),
+            ui.output_plot("prob_neg_bin2"),
+
+            ui.h3("Характеристики:"),
+            ui.tags.ul(
+                {"style":"list-style-type:circle;font-size: 20px"},
+                ui.tags.li("\(Математическое \ ожиданние: \\frac{rq}{p} \)"),
+                ui.tags.li("\(Дисперсия: \\frac{rq}{p^2} \)"),
+                ui.tags.li("\(Мода: [\\frac{(r-1)q}{p}] \ если \ r > 1; \ 0 \ если \ r \leq \ 1\)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{2-p}{\\sqrt{rq}} \)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: \\frac{6}{r} + \\frac{p^2}{rq} \)"),
+            ),
+
+            ui.h3("Формулы:"),
+            ui.tags.ul(
+                {"style":"list-style-type:circle;font-size: 20px"},
+                ui.tags.li("\(Плотность: P(\{k\}) = (1 - p)^{k-1}p \)"),
+            ),
+        ),
         
         
-        
-        
-        
-        
+        # Нормальное распределение
+        ui.nav(
+            "Нормальное распределение (гауссовское)",
+            ui.input_slider("normal2", "\(\mu\)", -5, 5, 0),
+            ui.input_slider("normal3", "\(\sigma\)", 0, 10, 5),
+
+            ui.h4("Параметры:"),
+            ui.h5("\(N(\mu, \sigma^2) \)"),
+            ui.h5("\(\mu \ - коэффициент \ сдвига \)"),
+            ui.h5("\(\sigma > 0 \ - коэффициент \ масштаба \)"),
+
+            ui.h3("Плотность вероятности:"),
+            ui.h5("\( \mathbb{P}(\\xi) = \\frac{1}{\sigma \sqrt{2 \pi}} e^{-\\frac{(x-\mu)^2}{2\sigma^2}} \)"),
+            ui.output_plot("normal_distribution1"),
+
+            ui.h3("Функция распределения"),
+            ui.h5("\( \mathbb{F}(x) = \\frac{1}{2}[1+erf(\\frac{x-\mu}{\sqrt{2\sigma^2}})] \)"),
+            ui.h5("\( erf \ - \ функция \ ошибок\)"),
+            ui.h5("\( erf x\ = \ \\frac{2}{\sqrt{\pi}} \int\limits_0^x e^{-t^2} \mathrm d t\)"),
+            ui.output_plot("normal_distribution2"),
+
+            ui.h3("Характеристики:"),
+            ui.tags.ul(
+                {"style":"list-style-type:circle;font-size: 20px"},
+                ui.tags.li("\(Математическое \ ожиданние: \mu \)"),
+                ui.tags.li("\(Дисперсия: \mu \)"),
+                ui.tags.li("\(Мода: \mu\)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: 0 \)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: 0 \)"),
+            ),
+        ),
+
+        # Распределение Парето
+        ui.nav(
+            "Парето",
+            ui.input_slider("pareto1", "\(k\)", 0, 10, 5),
+            ui.input_slider("pareto2", "\(x_m\)", 0, 10, 5),
+
+            ui.h4("Параметры:"),
+            ui.h5("\(P(k, x_m) \)"),
+            ui.h5("\(x_m \ - коэффициент \ масштаба \)"),
+
+            ui.h3("Плотность вероятности:"),
+            ui.h5("\( \mathbb{P}(\\xi) = \\frac{k x_m}{x^{k+1}}, \ x \geq x_m \)"),
+            ui.output_plot("pareto_distr1"),
+
+            ui.h3("Функция распределения"),
+            ui.h5("\( \mathbb{F}(x) = 1 - (\\frac{x_m}{x})^k \)"),
+            ui.output_plot("pareto_distr2"),
+
+            ui.h3("Характеристики:"),
+            ui.tags.ul(
+                {"style":"list-style-type:circle;font-size: 20px"},
+                ui.tags.li("\(Математическое \ ожиданние: \\frac{kx_m}{k-1}, \ если \ k > 1\)"),
+                ui.tags.li("\(Медиана: x_m \sqrt[k]{2}\)"),
+                ui.tags.li("\(Мода: x_m\)"),
+                ui.tags.li("\(Дисперсия: (\\frac{x_m}{k-1})^2 \\frac{k}{k-2}, \ при \ k \ > \ 2 \)"),
+                ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{2(1+k)}{k-3} \sqrt{\\frac{k-2}{k}}, \ при \ k \ > \ 3 \)"),
+                ui.tags.li("\(Коэфициент \ эксцесса: \\frac{6(k^3 + k^2 - 6k -2)}{k(k-3)(k-4)}, \ при \ k \ > \ 4 \)"),
+            ),
+        ),
     ),
-    
 )
 
+def rectangle_method(f, a, b, N, r, k):
+    ans = 0
+    h = (b - a) / N
+    mid = (2 * a + h) / 2
+    for i in range(N):
+        ans += f(mid, r, k + 1)
+        mid += h
+    
+    ans *= h
+    return ans
+
+def f(t, a, b):
+    return t ** (a - 1) * (1 - t) ** (b - 1)
+
+def fac(n):
+    factorial = 1
+    i = 1
+    while (i <= n):
+        factorial *= i
+        i += 1
+    return factorial
+
+
+def combinations(n, k):
+    return fac(n) / (fac(k) * fac(n - k))
+
+
+
+def rectangle_method2(f, a, b, N):
+    ans = 0
+    h = (b - a) / N
+    mid = (2 * a + h) / 2
+    for i in range(N):
+        ans += f(mid)
+        mid += h
+    
+    ans *= h
+    return ans
+
+def f2(t):
+    return m.exp(-(t ** 2))
 
 
 def server(input, output, session):
@@ -327,10 +484,7 @@ def server(input, output, session):
         binom.rvs(size=10,n=n,p=p)
 
         data_binom = binom.rvs(n=n,p=p,loc=0,size=1000)
-        ax = sb.distplot(data_binom,
-                kde=True,
-                color='blue',
-                hist_kws={"linewidth": 25,'alpha':1})
+        ax = sb.distplot(data_binom, kde=True, color='blue', hist_kws={"linewidth": 25,'alpha':1})
         ax.set(xlabel='Binomial', ylabel='Frequency')
         
 
@@ -388,7 +542,6 @@ def server(input, output, session):
         for i in range(len(x)):
             plt.plot(x, y)
         
-        plt.show()
         return fig
     
     @output
@@ -486,10 +639,151 @@ def server(input, output, session):
         plt.xlim(0, sizer)
         return fig
     
+    
+    @output
+    @render.plot
+    def couchy_distr1():
+        fig, ax = plt.subplots()
+        x_0 = input.couchy1()
+        gamma = input.couchy2()
+
+        plt.grid()
+        x = np.linspace(-5, 5, 100)
+        help_x = ((x - x_0) / gamma) ** 2
+        y = 1 / (m.pi * gamma * (1 + help_x))
+        ax.plot(x, y)
+        return fig
+    
+    @output
+    @render.plot
+    def couchy_distr2():
+        fig, ax = plt.subplots()
+        x_0 = input.couchy1()
+        gamma = input.couchy2()
+
+        plt.grid()
+        x = np.linspace(-5, 5, 100)
+        help_x = np.zeros(100)
+        for i in range(100):
+            help_x[i] = m.atan((x[i] - x_0) / gamma)
+        y = 1 / m.pi * help_x + 1 / 2
+        ax.plot(x, y)
+        return fig
+
+
+    @output
+    @render.plot
+    def prob_neg_bin():
+        fig, ax = plt.subplots()
+        p = input.neg_bin1()
+        r = input.neg_bin2()
+
+        plt.xlabel("k")
+        plt.ylabel("p")
+        plt.grid()
+        x = np.zeros(25)
+        y = np.zeros(25)
+        for i in range (0 , 25):
+            x[i] = i
+        x_1 = 0
+        factorial = 1
+        for i in range (1, 25):
+            x_1 = combinations(x[i] + r - 1, x[i])
+            y[i] = x_1 * (p ** r) * ((1 - p) ** x[i])
+            ax.plot([x[i], x[i]], [0, y[i]], 'blue')
+        ax.plot(x, y, 'o')
+        ax.plot(x, y, 'blue')
         
-   
+        return fig
+    
+    @output
+    @render.plot
+    def prob_neg_bin2():
+        fig, ax = plt.subplots()
+        p = input.neg_bin1()
+        r = input.neg_bin2()
+
+        plt.xlabel("k")
+        plt.ylabel("p")
+        plt.grid()
+        x = np.zeros(25)
+        y = np.zeros(25)
+        for i in range (0 , 25):
+            x[i] = i
+        for i in range(25):
+            y[i] = rectangle_method(f, 0, p, 100, r, x[i]) / rectangle_method(f, 0, 1, 100, r, x[i])
+        
+        ax.plot(x, y)
+        return fig
      
 
+    @output
+    @render.plot
+    def normal_distribution1():
+        fig, ax = plt.subplots()
+        mu = input.normal2()
+        sigma = input.normal3()
+
+        plt.xlabel("x")
+        plt.ylabel("p")
+        plt.grid()
+        x = np.linspace(-5, 5, 100)
+        y = np.zeros(100)
+        for i in range(0, 100):
+            y[i] = 1 / (sigma * (2 * m.pi) ** (1/2)) * m.exp(-(x[i] - mu) ** 2)
+        ax.plot(x, y)
+        
+        return fig
+    
+    @output
+    @render.plot
+    def normal_distribution2():
+        fig, ax = plt.subplots()
+        mu = input.normal2()
+        sigma = input.normal3()
+
+        plt.xlabel("x")
+        plt.ylabel("p")
+        plt.grid()
+        x = np.linspace(-5, 5, 100)
+        x_i = np.zeros(100)
+        for i in range(0, 100):
+            x_i[i] = (x[i] - mu) / (sigma * (2 ** (1/2)))
+        y = np.zeros(100)
+        for i in range(0, 100):
+            y[i] = 1 / 2 * (1 + 2 / (m.pi ** (1/2)) * rectangle_method2(f2, 0, x_i[i], 100))
+        ax.plot(x, y)
+        return fig
+
+
+
+    @output
+    @render.plot
+    def pareto_distr1():
+        fig, ax = plt.subplots()
+        k = input.pareto1()
+        x_m = input.pareto2()
+
+        plt.grid()
+        x = np.linspace(x_m, 20, 100)
+        y = k * (x_m ** k) / (x ** (k + 1))
+        ax.plot(x, y)
+        ax.plot([x_m, x_m], [0, k])
+        return fig
+    
+    @output
+    @render.plot
+    def pareto_distr2():
+        fig, ax = plt.subplots()
+        k = input.pareto1()
+        x_m = input.pareto2()
+
+        plt.grid()
+        x = np.linspace(x_m, 20, 100)
+        y = 1 - (x_m / x) ** k
+        ax.plot(x, y)
+        ax.plot([x_m, x_m], [0, 1])
+        return fig
     
 
 app = App(app_ui, server)
