@@ -54,8 +54,10 @@ app_ui = ui.page_fluid(
                 ui.tags.li("\(Математическое \ ожиданние: p\)"),
                 ui.tags.li("\(Дисперсия: p(1-p)\)"),
                 ui.tags.li("\(Мода: \\begin{cases} 0, \ q > p \\\\ 0, 1, \ q = p \\\\ 1, \ q < p \end{cases}\)"),
+
                 ui.tags.li("\(Коэфициент \ ассиметрии: \\frac{1 - 2p}{\sqrt{(1-p)p}} \)"),
                 ui.tags.li("\(Коэфициент \ эксцесса: \\frac{6p^2 - 6p + 1}{p(1-p)} \)"),
+
                 
             ),
         ),
