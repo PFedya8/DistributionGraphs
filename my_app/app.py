@@ -50,7 +50,7 @@ app_ui = ui.page_fluid(
                 {"style":"list-style-type:circle;font-size: 20px"},
                 ui.tags.li("\(Математическое \ ожиданние: p\)"),
                 ui.tags.li("\(Дисперсия: p(1-p)\)"),
-                ui.tags.li("\(Мода: отсутствует\)"),
+                ui.tags.li("\(Мода: \\begin{cases} 0, \ q > p \\\\ 0, 1, \ q = p \\\\ 1, \ q < p \end{cases}\)"),
                 ui.tags.li("\(Коэфициент \ ассиметрии: отсутствует\)"),
                 ui.tags.li("\(Коэфициент \ эксцесса: отсутствует\)"),
                 
